@@ -1,0 +1,209 @@
+<!doctype html>
+<!--
+  Projet 3 — Système de location de matériel informatique
+  Équipe : JKK = Kitiki, Jurel Kissel · DKM = Mpete, Dan Kazadi
+           KAKK = Koffi, Kouadio Axel Kevin · FO = Olou, Fulgence
+  [KAKK] structure générale, en-tête, tableau de bord
+-->
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LocaTech — Location de matériel informatique</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- [KAKK] En-tête et navigation par onglets -->
+  <header class="entete">
+    <div class="entete-contenu">
+      <a class="marque" href="#tableau" aria-label="LocaTech, accueil">
+        <span class="logo" aria-hidden="true">LT</span>
+        <span>LocaTech<small>Location de matériel informatique</small></span>
+      </a>
+      <nav class="onglets" aria-label="Sections">
+        <button class="onglet" type="button" data-onglet="tableau">Tableau de bord</button>
+        <button class="onglet" type="button" data-onglet="materiels">Matériel</button>
+        <button class="onglet" type="button" data-onglet="clients">Clients</button>
+        <button class="onglet" type="button" data-onglet="locations">Locations</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- [KAKK] Tableau de bord -->
+    <section id="tableau" class="panneau" aria-labelledby="titre-tableau" hidden>
+      <div class="titre-section">
+        <h1 id="titre-tableau">Tableau de bord</h1>
+        <button class="btn" type="button" id="btn-nouvelle-location">+ Nouvelle location</button>
+      </div>
+      <div class="cartes" id="cartes-stats"></div>
+      <div class="grille-2">
+        <article class="carte">
+          <h2>Locations en retard</h2>
+          <div class="table-defilante">
+            <table id="table-retards">
+              <thead><tr><th>#</th><th>Client</th><th>Matériel</th><th>Fin prévue</th><th class="num">Retard</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </article>
+        <article class="carte">
+          <h2>Matériel par catégorie</h2>
+          <ul class="barres" id="liste-categories-stats"></ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- [JKK] Gestion du matériel -->
+    <section id="materiels" class="panneau" aria-labelledby="titre-materiels" hidden>
+      <div class="titre-section"><h1 id="titre-materiels">Matériel</h1><span class="pastille" id="compteur-materiels"></span></div>
+      <div class="disposition">
+        <form id="form-materiel" class="carte formulaire">
+          <h2 id="titre-form-materiel">Ajouter un matériel</h2>
+          <label>Nom <input id="materiel-nom" required maxlength="100" placeholder="Dell Latitude 5440"></label>
+          <label>Catégorie <input id="materiel-categorie" required maxlength="50" list="liste-categories" placeholder="Ordinateur portable"></label>
+          <datalist id="liste-categories"></datalist>
+          <label>Numéro de série <input id="materiel-serie" required maxlength="50" placeholder="DL5440-009"></label>
+          <div class="deux-colonnes">
+            <label>Tarif / jour ($) <input id="materiel-tarif" type="number" min="0" step="0.01" required></label>
+            <label>État
+              <select id="materiel-etat">
+                <option value="disponible">Disponible</option>
+                <option value="maintenance">Maintenance</option>
+                <option value="loue" hidden>Loué</option>
+              </select>
+            </label>
+          </div>
+          <label>Description <textarea id="materiel-description" maxlength="255" rows="2" placeholder="Caractéristiques (facultatif)"></textarea></label>
+          <div class="boutons">
+            <button class="btn" type="submit" id="materiel-enregistrer">Ajouter</button>
+            <button class="btn secondaire" type="button" id="materiel-annuler" hidden>Annuler</button>
+          </div>
+        </form>
+
+        <div class="carte">
+          <div class="filtres">
+            <input type="search" id="filtre-materiel-recherche" placeholder="Rechercher (nom, n° de série…)" aria-label="Rechercher du matériel">
+            <select id="filtre-materiel-categorie" aria-label="Filtrer par catégorie"><option value="">Toutes les catégories</option></select>
+            <select id="filtre-materiel-etat" aria-label="Filtrer par état">
+              <option value="">Tous les états</option>
+              <option value="disponible">Disponible</option>
+              <option value="loue">Loué</option>
+              <option value="maintenance">Maintenance</option>
+            </select>
+          </div>
+          <div class="table-defilante">
+            <table id="table-materiels">
+              <thead><tr><th>Matériel</th><th>Catégorie</th><th>N° de série</th><th class="num">Tarif / jour</th><th>État</th><th></th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- [DKM] Gestion des clients -->
+    <section id="clients" class="panneau" aria-labelledby="titre-clients" hidden>
+      <div class="titre-section"><h1 id="titre-clients">Clients</h1><span class="pastille" id="compteur-clients"></span></div>
+      <div class="disposition">
+        <form id="form-client" class="carte formulaire">
+          <h2 id="titre-form-client">Ajouter un client</h2>
+          <div class="deux-colonnes">
+            <label>Prénom <input id="client-prenom" required maxlength="100"></label>
+            <label>Nom <input id="client-nom" required maxlength="100"></label>
+          </div>
+          <label>Courriel <input id="client-courriel" type="email" required maxlength="150" placeholder="nom@exemple.ca"></label>
+          <label>Téléphone <input id="client-telephone" type="tel" maxlength="20" placeholder="819-555-0123"></label>
+          <label>Adresse <input id="client-adresse" maxlength="255" placeholder="Facultatif"></label>
+          <div class="boutons">
+            <button class="btn" type="submit" id="client-enregistrer">Ajouter</button>
+            <button class="btn secondaire" type="button" id="client-annuler" hidden>Annuler</button>
+          </div>
+        </form>
+
+        <div class="carte">
+          <div class="filtres">
+            <input type="search" id="filtre-client-recherche" placeholder="Rechercher (nom, courriel, téléphone…)" aria-label="Rechercher un client">
+          </div>
+          <div class="table-defilante">
+            <table id="table-clients">
+              <thead><tr><th>Client</th><th>Courriel</th><th>Téléphone</th><th class="num">Locations</th><th></th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- [FO] Gestion des locations -->
+    <section id="locations" class="panneau" aria-labelledby="titre-locations" hidden>
+      <div class="titre-section"><h1 id="titre-locations">Locations</h1><span class="pastille" id="compteur-locations"></span></div>
+      <div class="disposition">
+        <form id="form-location" class="carte formulaire">
+          <h2>Nouvelle location</h2>
+          <label>Client <select id="location-client" required><option value="">Choisir un client…</option></select></label>
+          <label>Matériel disponible <select id="location-materiel" required><option value="">Choisir un matériel…</option></select></label>
+          <div class="deux-colonnes">
+            <label>Début <input id="location-debut" type="date" required></label>
+            <label>Fin prévue <input id="location-fin" type="date" required></label>
+          </div>
+          <label>Remarque <input id="location-remarque" maxlength="255" placeholder="Facultatif"></label>
+          <p class="estimation" id="location-estimation" aria-live="polite">Choisissez un matériel et des dates.</p>
+          <div class="boutons"><button class="btn" type="submit">Créer la location</button></div>
+        </form>
+
+        <div class="carte">
+          <div class="filtres">
+            <input type="search" id="filtre-location-recherche" placeholder="Rechercher (client, matériel…)" aria-label="Rechercher une location">
+            <select id="filtre-location-statut" aria-label="Filtrer par statut">
+              <option value="">Tous les statuts</option>
+              <option value="en_cours">En cours</option>
+              <option value="en_retard">En retard</option>
+              <option value="terminee">Terminées</option>
+              <option value="annulee">Annulées</option>
+            </select>
+          </div>
+          <div class="table-defilante">
+            <table id="table-locations">
+              <thead><tr><th>#</th><th>Client / matériel</th><th>Période</th><th class="num">Montant</th><th>Statut</th><th></th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="note" id="note-stripe" hidden>Paiement en ligne désactivé : ajoutez votre clé Stripe de test dans le fichier .env.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- [FO] Fenêtre de retour du matériel -->
+  <dialog id="dialog-retour" aria-labelledby="titre-retour">
+    <form id="form-retour">
+      <h2 id="titre-retour">Retour du matériel</h2>
+      <p id="retour-resume" class="secondaire"></p>
+      <label>Date de retour <input id="retour-date" type="date" required></label>
+      <label class="case"><input id="retour-endommage" type="checkbox"> Matériel endommagé (passe en maintenance)</label>
+      <p class="estimation" id="retour-estimation" aria-live="polite"></p>
+      <div class="boutons">
+        <button class="btn" type="submit">Confirmer le retour</button>
+        <button class="btn secondaire" type="button" id="retour-fermer">Fermer</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- [KAKK] Notifications -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <footer class="pied">
+    Projet 3 — Système de location de matériel informatique · JKK · DKM · KAKK · FO
+  </footer>
+
+  <script src="js/api.js" defer></script>        <!-- [KAKK] -->
+  <script src="js/tableau.js" defer></script>    <!-- [KAKK] -->
+  <script src="js/materiels.js" defer></script>  <!-- [JKK]  -->
+  <script src="js/clients.js" defer></script>    <!-- [DKM]  -->
+  <script src="js/locations.js" defer></script>  <!-- [FO]   -->
+  <script src="js/paiements.js" defer></script>  <!-- [KAKK] -->
+  <script src="js/main.js" defer></script>       <!-- [KAKK] -->
+</body>
+</html>
